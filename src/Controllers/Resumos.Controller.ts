@@ -3,10 +3,10 @@ import ResumosRepository from '../Repositorios/Resumos-Repositorios';
 import jwt,{ JwtPayload } from 'jsonwebtoken';
 import UsuariosRepositorio from '../Repositorios/User-Repositorios';
 import TResumo from '../tipos/TResumo';
-import ChatGptController from './Chat.Controller';
+import { gerarDescricaoGemini } from './Chat.Controller';
 
 const resumoRepo = new ResumosRepository();
-const chatGpt = new ChatGptController();
+
 export default class ResumosController {
     async criar(req:Request, res: Response){
         const {materiaId, titulo, topicos, descricao} = req.body;
@@ -28,6 +28,7 @@ export default class ResumosController {
             const materiaExistente = await resumoRepo.findByid(materiaId);
             if(!materiaExistente){
             return res.status(404).json({"mensagem": "Matéria não encontrada"})}
+            const descricaoGerada = await gerarDescricaoGemini(topicos) || descricao;
 
            
             const resumo: TResumo = { 
@@ -35,7 +36,7 @@ export default class ResumosController {
                 materiaId,
                 titulo: titulo||"Sem título",
                 topicos: topicos.join(', '),
-                descricao: descricao || "Sem descrição",
+                descricao: descricaoGerada,
                 criado: new Date().toISOString()
             };
             const resultado = await resumoRepo.criar(resumo);

@@ -1,25 +1,10 @@
-import axios from 'axios';
-import apiOpenai from '../ApiOpnai';
-import { Response,Request } from 'express';
+import 'dotenv/config';
+import { GoogleGenerativeAI, GenerateContentRequest } from "@google/generative-ai";
 
-const endpoint = 'https://api.openai.com/v1/chat/completions';
-
-export default class ChatGptController {
-   async gerarDescricao(topicos: string[] ){
-    const prompt = topicos.join(', ');
-    if(!prompt){
-        return "Sem descrição";
-    }
-    try {
-      const response = await apiOpenai.post(endpoint, {
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: prompt }],
-      });
-
-      return response.data.choices[0].message.content;
-    } catch (error) {
-      console.error('Erro ao gerar descrição:', error);
-      throw new Error('Erro ao gerar descrição.');
-    }
-  }
+export async function gerarDescricaoGemini(topicos: string[]) {
+  const generativeAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+  const model = await generativeAI.getGenerativeModel({model: "gemini-1.5-flash"})
+  const prompt = `Crie uma breve descrição de 250 characteres sobre : ${topicos.join(', ')}`;
+  const result = await model.generateContent(prompt,);
+  return result.response.text()
 }
