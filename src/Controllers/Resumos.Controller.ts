@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import ResumosRepository from '../Repositorios/Resumos-Repositorios';
-import jwt,{ JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import UsuariosRepositorio from '../Repositorios/User-Repositorios';
 import TResumo from '../tipos/TResumo';
 import { gerarDescricaoGemini } from './Chat.Controller';
