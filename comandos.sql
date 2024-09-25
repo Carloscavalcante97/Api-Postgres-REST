@@ -19,7 +19,7 @@ CREATE TABLE resumos (
   "id" serial NOT NULL,
   "usuario_id" int4 NOT NULL,
   "materia_id" int4 NOT NULL,
-  "titulo" text,
+  "titulo" text NOT NULL,
   "topicos" text NOT NULL,
   "descricao" text NOT NULL,
   "criado" timestamptz NOT NULL DEFAULT now(),
